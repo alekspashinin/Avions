@@ -1,0 +1,349 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{psfrag}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{ucs}
+
+\usepackage{hyperref}
+\usepackage{fourier}
+\usepackage{listings}
+
+
+
+
+
+\setcounter{secnumdepth}{4}
+
+\begin{document}
+
+
+\title{\textbf{Projet Programmation : Les Avions}}
+
+\author{\large{D.Soupilas-A.Pashinin}}
+\date{}
+
+\maketitle
+
+\section{Jeu}
+
+\subsection{Players}
+\label{sec:players}
+
+Les joueurs appartiennent à une structure "players".
+Chaque joueur (Player1 et Player2) est du type Player, a chaque player on définit son score qui change au fur et à mesure du jeu, le x\_loc qui varie à chaque mouvement du joueur, le nom du joueur qui est demandé à chaque\hyperref[sec:gnames]{début de partie}, le coordonné de son laser qui varie, une taille qui est stricte et ne varie pas pendant le jeu et un entier game\_on .
+\begin{lstlisting}
+  typedef struct{
+    int score;
+    int x_loc;
+    char name[50];
+    int x_laser;
+    int taille;
+  }player;
+
+  typedef struct{
+    player Player1;
+    player Player2;
+    int game\_on;
+  }players;
+
+\end{lstlisting}
+
+\subsubsection{void laser\_P1(players *P, int i);}
+\label{sec:laserp1}
+
+Cette fonction sert à l'apparition graphique du laser du Player1 pendant le jeu, ainsi que l'affectation d'une valeur au x\_laser du Player1, elle prend en argument un type Players et un entier. \\ La fonction charge une image L1="turret\_attack\_blue.png" qui représente l'attaque du joueur 1 .\\
+Lors de l'appel de cette fonction, on affecte au x\_laser du Player1 la valeur: x\_loc du Player1 + (taille du Player1 / 2).
+
+(P->Player1.x\_laser)=P->Player1.x\_loc+(P->Player1.taille/2);
+
+Puis la fonction dessine l'image L1 en position x\_loc du Player1.
+
+\subsubsection{void laser\_P2(players *P, int i);}
+\label{sec:laserp2}
+
+Cette fonction sert à l'apparition graphique du laser du Player2 pendant le jeu, ainsi que l'affectation d'une valeur au x\_laser du Player2, elle prend en argument un type Players et un entier. \\ La fonction charge une image L2="turret\_attack\_blue.png" qui représente l'attaque du joueur 2 .\\
+Lors de l'appel de cette fonction, on affecte au x\_laser du Player2 la valeur: x\_loc du Player2 + (taille du Player2 / 2).
+
+(P->Player2.x\_laser)=P->Player2.x\_loc+(P->Player2.taille/2)
+Puis la fonction dessine l'image L2 en position x\_loc du Player2.
+
+\newpage
+
+\subsubsection{void pos\_player1(players *P)}
+\label{sec:posp1}
+
+Cette fonction permet le mouvement graphique du Player1 en posant des contraintes qui interdisent au joueur de sortir de l'écran, elle prend en argument un type Players.\\ La fonction charge un son laser1="Shot\_01.ogg" qui représente le son lors de l'apparition du laser, et une image Pl1="turret.png" qui est la représentation graphique du Player1. Si la touche flèche droite est appuyée l'image de déplace d'un certain nombre de pixels a droite, si la touche flèche gauche est appuyée l'image de déplace d'un certain nombre de pixels a gauche.\\
+Si la touche espace est appuyée son laser est joué et la fonction \hyperref[sec:laserp1]{laser\_P1} est appelée.\\
+De meme le score courant du Player1 est affiché sur l'image.
+
+\subsubsection{void pos\_player2(players *P)}
+\label{sec:posp2}
+
+Cette fonction permet le mouvement graphique du Player2 en posant des contraintes qui interdisent au joueur de sortir de l'écran, elle prend en argument un type Players.\\ La fonction charge un son laser2="Shot\_01.ogg" qui représente le son lors de l'apparition du laser, et une image Pl1="turret.png" qui est la représentation graphique du Player1. Si la touche 'd' est appuyée l'image de dÃ©place d'un certain nombre de pixels a droite, si la touche 'a' est appuyée l'image de déplace d'un certain nombre de pixels a gauche.\\
+Si la touche 'w' est appuyée son laser est joué et la fonction \hyperref[sec:laserp2]{laser\_P1} est appelée.\\
+De meme le score courant du Player2 est affiché sur l'image.
+
+\subsubsection{void actu\_players(players *P)}
+\label{sec:actu}
+Dans cette fonction prend en argument un type players, elle appelle les deux fonctions \hyperref[sec:posp1]{pos\_player1} et \hyperref[sec:posp2]{pos\_player2}.
+
+\subsubsection{int exist(char *i, int j, char *a, int b)}
+
+Au moment de sauvegarder les scores a la fin d' une partie cette fonction check si le meme score avec le meme prenom existe deja.
+
+\subsubsection{void ajouter(char * i, int j)}
+
+Cette fonction ajoute un string et un int qu'il prend en parametre dans le fichier 'score.txt.'.
+
+
+\subsubsection{void print\_scores(players *P)}
+\label{sec:scores}
+
+Cette fonction prend en argument un type players, elle sert a afficher les scores des 2 joueurs a la fin d'un partie a deux joueurs.
+Elle appelle la fontion ajouter afin de sauvegarder les scores des joueurs.
+
+\subsubsection{void print\_score(players *P)}
+\label{sec:score}
+
+Cette fonction prend en argument un type players, elle sert a afficher le score du Player1 a la fin d'une partie a un joueur.
+Elle appele la fonction ajouter afin de sauvegarder le score du joueur.
+
+\subsubsection{void get\_names(players *P)}
+\label{sec:gnames}
+
+Cette fonction prend en argument un type players, elle sert a afficher deux input boxes au debut d'un partie a deux joueurs dans lequels les joueur rentrerons leurs prénoms.\\
+Ces prénoms seront stockés dans le name de chaque joueur.
+
+\subsubsection{void get\_name(players *P)}
+\label{sec:gname}
+
+Cette fonction prend en argument un type players, elle sert a affiche un input box au debut d'une partie a un joueur dans lequel le joueur rentre son nom.\\
+Ce prénom sera stockÃ© dans le name du Player1.
+
+\newpage
+
+\subsection{Explosion}
+\label{sec:explo}
+Cette fonctions crée l'animation d'une explosion dans les coordonnes donnes avec un son d'explosion.
+
+\subsection{Planes}
+\label{sec:avions}
+
+Les avions appartienent a une structure "planes".\\
+Chaque avion est de type plane, il existe 3 types d'avions,hely1,hely2 et plane1.\\
+A chaque avion on dÃ©ffini une position x qui varie avec le mouvenment de l'avion (voir hellycop1droite), une taille et un nombre de points.
+
+\begin{lstlisting}
+  typedef struct{
+    int x;
+    int taille;
+    int points;
+  }plane;
+
+  typedef struct{
+    plane hely1;
+    plane hely2;
+    plane plane1;
+  }planes;
+\end{lstlisting}
+
+\subsubsection{Planes\_Droite}
+\label{sec:plad}
+Animations des avions aparaissant de la droite.
+
+\paragraph{int killedplane(planes *GR, players *P)}
+
+Cette fonction sert a voir la mort d'un plane (s'il est touché). Elle retourne 1 si le plane est touché et 0 si il est toujours vivant. Elle prend en argument un type planes et un type players.\\
+Si le x\_laser du Player1 ou du Player2 = x du plane alors la fonction retourne 1 sinon il retourne 0.\\
+Appelle la fonction \hyperref[sec:explo]{explosion} si l'avion est touché.
+
+
+\paragraph{int killedhely1(planes *GR, players *P)}
+
+Cette fonction sert a voir la mort d'un hely1 (s'il est touché). Elle retourne 1 si le hely1 est touché et 0 si il est toujours vivant. Elle prend en argument un type planes et un type players.
+
+Si le x\_laser du Player1 ou du Player2 = x du hely1 alors la fonction retourne 1 sinon il retourne 0;\\
+Appelle la fonction \hyperref[sec:explo]{explosion} si l'avion est touché.
+
+\paragraph{int killedhely2(planes *GR, players *P)}
+
+Cette fonction sert a voir la mort d'un hely2 (s'il est touché). Elle retourne 1 si le hely2 est touché et 0 si il est toujours vivant. Elle prend en argument un type planes et un type players.
+
+Si le x\_laser du Player1 ou du Player2 = x du hely2 alors la fonction retourne 1 sinon il retourne 0;\\
+Appelle la fonction \hyperref[sec:explo]{explosion} si l'avion est touché.
+
+\newpage
+
+\paragraph{void helycop1droite(planes* GR, players* P, int pos)}
+
+Cette fonction prend en argument un planes, un type players et un entier, ce dernier represente le coordoné x du début de l'animation.
+
+Cette fontion construit l'animation graphique du hely1, elle prend des photos et crée l'animation du petit helicopter rouge. Sa boucle while sert a orchestrer tout le jeu puisque elle dessine l'image de background et elle appelle la fonction \hyperref[sec:actu]{actu\_players} pandant que l'hely1 est PAS MORT.\\\\
+\danger A chaque debut de boucle les valeur des x\_laser des deux joueurs est mise a -1000, si on neglige cette etape la valeur de x\_laser reste dans le jeu ce qui provoque une mort aux avions automatique sans action du joueur.
+
+\paragraph{void helycop2droite(planes* GR, players* P, int pos)}
+
+Cette fonction prend en argument un planes, un type players et un entier,ce dernier represente le coordone x du debut de l'animation.
+
+Cette fontion rconstruit l'animation graphique du hely2, elle prend des photos et cree l'animation du moyen helicopter rouge. Sa boucle while sert a orchestrer tout le jeu puisque elle dessine l'image de background et elle appelle la fonction ACTU\_PLAYERS pandant que l'hely2 est PAS MORT.
+
+\danger
+
+\paragraph{ void planedroite(planes* GR, players* P, int pos)}
+
+Cette fonction prend en argument un planes, un type players et un entier,ce dernier represente le coordone x du debut de l'animation.
+
+Cette fontion construit l'animation graphique du plane, elle prend des photos et cree l'animation de l'avion civile. Sa boucle while sert a orchestrer tout le jeu puisque elle dessine l'image de background et elle appelle la fonction ACTU\_PLAYERS pandant que le plane est PAS MORT.
+
+\danger
+
+
+\subsubsection{Planes\_Gauche}
+\label{sec:plag}
+\paragraph{void helycop1gauche(planes* GR, players* P, int pos)}
+
+Miroir de helycop1droite.
+
+\paragraph{void helycop2dgauche(planes* GR, players* P, int pos)}
+
+Miroir de helycop2droite.
+
+\paragraph{ void planegauche(planes* GR, players* P, int pos)}
+
+Miroir de planedroite.
+
+\subsection{Game}
+
+Ce fichier orchestre tout le jeu, il appelle les fonction precedentes afin de construire le jeu et son petit menu.
+
+\subsubsection{int randomise()}
+\label{sec:rand}
+Cette fonction choisi aleatoirement un nombre, si le nombre est pair elle retourne 1 sinon elle retourne 0;
+
+\subsubsection{int game\_on(clock\_t time\_beg, int duration\_sec)}
+\label{sec:gon}
+Cette fonction sert comme timer pour le jeu, elle prend en argument un temps et une durée (en secondes), elle retourne 0 si le temps restant est supperieur a 0, sinon elle retourne 1.
+\newpage
+\subsubsection{void init\_1P(planes *GR, players *P)}
+
+Cette fonction sert à initialiser une partie à un joueur, elle prend en argument un type planes et un type players.
+
+Les scores des deux players sont mis a 0.
+Les tailles des deux players sont mises à la longuer de l'image des joueurs en pixels.
+Le x\_loc du Player1 initialise l'image du joueur au milieu de l'ecran.
+Le x\_loc du Player2 est initialisé dans les negatif (-1500).
+Chaque avion prend sa taille en pixels.
+Les coordones des Avions sont egalement initialisés dans les negatifs (-2000).
+Les x\_lasers des joueurs sont egalement initialisés dans les negatifs (-1000).
+Game\_on est initialisé à 1.
+
+\subsubsection{void init\_2P(planes *GR, players *P)}
+\label{sec:init2}
+Cette fonction sert à initialiser une partie à deux joueurs, elle prend en argument un type planes et un type players.
+
+Les scores des deux players sont mis à 0.
+Les tailles des deux players sont mises a à la longuer de l'image des joueurs en pixels.
+Le x\_loc du Player1 initialise l'image du joueur au 1/4 de l'ecran.
+Le x\_loc du Player2 initialise l'image du joueur au 3/4 de l'ecran.
+Chaque avion prend sa taille en pixels.
+Les coordones des Avions sont egalement initialisés dans les negatifs (-2000).
+Les x\_lasers des joueurs sont egalement initialisés dans les negatifs (-1000).
+Game\_on est initialisé à 1.
+
+\subsubsection{void Players2\_new(int duration)}
+\label{sec:p2new}
+Cette fonction orchestre tout le jeu a deux joueurs, elle demande \hyperref[sec:gnames]{les noms} des joureurs, ensuit initialise toutes les valeurs, et finalement appelle les fonctions des \hyperref[sec:avions]{avions} en utilisant la fonction \hyperref[sec:rand]{randomise} pendant que le \hyperref[sec:gon]{temps} de la partie n'est pas ecoulé.\\
+Si la touche echape est clické, elle appelle le menu du jeu.
+
+\subsubsection{void Player1\_new(int duration)}
+\label{sec:p1new}
+Cette fonction orchestre tout le jeu a un joueur, elle demande \hyperref[sec:gname]{le nom} du joureur, ensuit initialise toutes les valeurs, et finalement appelle les fonctions des \hyperref[sec:avions]{avions} en utilisant la fonction \hyperref[sec:rand]{randomise} pendant que le \hyperref[sec:gon]{temps} de la partie n'est pas ecoulé.\\
+Si la touche echape est clické, elle appelle le menu du jeu.\\
+\danger Une partie à un joueur ne peut pas etre sauvegardée.
+
+	  
+      
+\subsubsection{void game\_load(planes* GR, players *P, int duration)}
+\label{sec:gload}
+Cette fonction fonctione de la meme manière que les précedantes avec la seule difference qu'elle initialise pas le valeurs, les valeurs sont initialisés et traités au préalable. Elle recoit toutes les information sure les joueurs et les avions et execute le jeu.
+
+
+\subsubsection{menu-jeu}
+Utilise exactement le meme principe que le \hyperref[sec:menu]{menu principal} avec la seule difference la fonction savegamej qui sauve les scores et les noms des joueurs d'une partie a deux joueurs dans un fichier 'save.txt'..
+\newpage
+\section{Menu}
+\label{sec:menu}
+\subsection{void nav(int x1, int y1, int i)}
+
+Cette fonction sert a rendre le menu plus joli en rendant bleu les cases selectionnes par l'utilisateur.
+
+\subsection{void menu\_princ()}
+
+Cette fonction affiche le menu principal.
+
+\subsection{void blinc\_test(int i)}
+
+Cette fonction attend un click du joueur sur le menu.
+Pandant ce temps l'utilisateur peut 'naviguer' dans le menu avec la fonction nav.
+Lorsque l'utilisateur click sur son choix, la fonction button est appellé.
+
+\subsection{void button(int z, int x1, int y1)}
+
+Cette fonction prend trois arguments z, x1 et y1. Le 'z' represente la couche ou il se trouve et dependant de ce 'z' l'utilisateur peux clicker sur les options du menu qui lui sont proposés.\\
+Nous avons choisis ce système de couches car lorsque l'utilisateur rentre dans une sous partie du menu si le systeme des couches existe pas alors le porgramme est en confli ne sachant pas ce qu'il doit faire ce qui resulte a une action qui n'est pas la bonne.\\
+Chaque partie du menu a son propre 'z' qui lui est affilié.
+
+\subsection{void ab\_authors()}
+
+Cette fonction affiche la sous partie du menu ou l'on peut trouver les informations sur les auuteurs.\\
+Son 'z' de retour vaut 5.
+
+\subsection{void newgame()}
+
+Cette fonction affiche la sous partie du menu ou l'on peut trouver les options de type de jeu (1 Joueur, 2 Joueurs).
+Son 'z' d' options vaut 1.
+L'utilisateur peut choisir une partie a \hyperref[sec:p1new]{un Joueur}, ou une partie a \hyperref[sec:p2new]{deux Joueurs.}
+
+
+\subsection{void cont\_game()}
+
+Cette fonction fait partie de options de loadgame (si dessous), c'est elle qui charge l'anciene partie.\\
+Elle prend les informations d'un fichier 'save.txt' qui lui contient les information de l'anciene partie, \hyperref[sec:init2]{initialise} la partie, charge les vielles informations et appelle la fonction \hyperref[sec:gload]{game\_load.}
+\subsection{void loadgame()}
+
+Cette fonction affiche la sous partie du menu ou l'on a l'option de reprendre une partie sauvegardé au paravant.
+Son 'z' d' options vaut 1.
+
+\subsection{int read\_scores(FILE* score, scores S)}
+
+Cette fonction ouvre le fichier contenant les scores des parties deja joues, les sauvegardes dans un tableau scores de type scorez et renvoi leur nombre.
+
+\subsection{arange\_scores(scores S, int i)}
+
+Cette fonction trie le tableau scores et range les scores par ordre decroissant.
+
+\subsection{void tableau\_score()}
+
+Cette fonction appelle les deux fonctions precedantes (read\_scores et arange\_scores) et ensuite dessine le tableau des scores.
+
+\subsection{void score()}
+
+Cette fonction affiche la sous partie du menu ou l'on voit les hightscores en appelant la fonction precedante (tablea\_score).
+Son 'z' d'options vaut 4.
+
+\subsection{void gamemap()}
+
+Cette fonction affiche la sous partie du menu ou l'on voit la map du jeu.
+\end{document}
+
+
+
+
+
+
